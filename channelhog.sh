@@ -162,7 +162,7 @@ case "$1" in
 							},
 							{
 								"name": "Uptime",
-								"value": "$(uptime | awk '{print $3}' | cut -d ',' -f1)",
+								"value": "$(uptime | awk -F, '{sub(".*up ",x,$1);print $1,$2}')",
 								"inline": false
 							}
 						],
