@@ -1,18 +1,18 @@
 #!/bin/sh
 
 ##################################################################
-#     _____ _                            _ _    _ 		 #
-#    / ____| |                          | | |  | |		 #
-#   | |    | |__   __ _ _ __  _ __   ___| | |__| | ___   __ _	 #
-#   | |    | '_ \ / _` | '_ \| '_ \ / _ \ |  __  |/ _ \ / _` |	 #
-#   | |____| | | | (_| | | | | | | |  __/ | |  | | (_) | (_| |	 #
-#    \_____|_| |_|\__,_|_| |_|_| |_|\___|_|_|  |_|\___/ \__, |	 #
-#                                                        __/ |	 #
-#                                                       |___/	 #
-#								 #
-#    Monitor And Force Maximum 5GHz Bandwidth For Asus Routers	 #
-#	      By Adamm - https://github.com/Adamm00		 #
-# 		     16/12/2019 - v1.0.0			 #
+#     _____ _                            _ _    _                #
+#    / ____| |                          | | |  | |               #
+#   | |    | |__   __ _ _ __  _ __   ___| | |__| | ___   __ _    #
+#   | |    | '_ \ / _` | '_ \| '_ \ / _ \ |  __  |/ _ \ / _` |   #
+#   | |____| | | | (_| | | | | | | |  __/ | |  | | (_) | (_| |   #
+#    \_____|_| |_|\__,_|_| |_|_| |_|\___|_|_|  |_|\___/ \__, |   #
+#                                                        __/ |   #
+#                                                       |___/    #
+#                                                                #
+#    Monitor And Force Maximum 5GHz Bandwidth For Asus Routers   #
+#            By Adamm - https://github.com/Adamm00               #
+#                    16/12/2019 - v1.0.0                         #
 ##################################################################
 
 
@@ -21,6 +21,7 @@ botname="ChannelHogBOT"
 avatar="https://i.imgur.com/jZk12SL.png"
 channelhogcfg="/jffs/scripts/channelhog.cfg"
 
+clear
 sed -n '3,18p' "$0"
 
 Kill_Lock () {
@@ -125,11 +126,13 @@ fi
 
 case "$1" in
 	start)
+		Check_Lock "$@"
 		cru d ChannelHog
 		cru a ChannelHog "45 6 * * * sh /jffs/scripts/channelhog.sh"
 	;;
 
 	check)
+		Check_Lock "$@"
 		. "$channelhogcfg"
 		port5ghz="$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{print $1}')"
 		currentbandwidth="$(wl -i "$port5ghz" assoc | grep -F "Chanspec" | awk '{print $5}')"
@@ -179,6 +182,7 @@ EOF
 	;;
 
 	disable)
+		Check_Lock "$@"
 		cru d ChannelHog
 		echo "[%] ChannelHog Disabled"
 	;;
@@ -207,6 +211,7 @@ EOF
 	;;
 
 	install)
+		Check_Lock "$@"
 		while true; do
 			echo "Would You Like To Enable Discord Notifications?"
 			echo "[1]  --> Yes"
@@ -271,6 +276,7 @@ EOF
 	;;
 
 	uninstall)
+		Check_Lock "$@"
 		echo "If You Were Experiencing Issues, Try Update Or Visit SNBForums/Github For Support"
 		echo "https://github.com/Adamm00/IPSet_ASUS"
 		echo
