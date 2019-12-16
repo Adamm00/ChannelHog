@@ -234,7 +234,7 @@ EOF
 							echo "[*] Exiting!"
 							echo; exit 0
 						fi
-						if ! curl -sI "$webhookurl" | grep -qE "HTTP/1.[01] [23].." || ! curl -S "$webhookurl" | grep -qF "token"; then
+						if ! curl -sI "$webhookurl" | grep -qE "HTTP/1.[01] [23].." || ! curl -s "$webhookurl" | grep -qF "token"; then
 							echo "[*] $webhookurl Isn't A Valid URL!"
 							echo
 							continue
