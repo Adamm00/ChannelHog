@@ -12,7 +12,7 @@
 #                                                                #
 #    Monitor And Force Maximum 5GHz Bandwidth For Asus Routers   #
 #            By Adamm - https://github.com/Adamm00               #
-#                    16/12/2019 - v1.0.0                         #
+#                    17/12/2019 - v1.0.0                         #
 ##################################################################
 
 
@@ -234,7 +234,7 @@ EOF
 							echo "[*] Exiting!"
 							echo; exit 0
 						fi
-						if ! curl -sI "$webhookurl" | grep -qE "HTTP/1.[01] [23].."; then
+						if ! curl -sI "$webhookurl" | grep -qE "HTTP/1.[01] [23].." || ! curl -S "$webhookurl" | grep -qF "token"; then
 							echo "[*] $webhookurl Isn't A Valid URL!"
 							echo
 							continue
@@ -270,6 +270,9 @@ EOF
 			sed -i "s~^sh /jffs/scripts/channelhog.sh .* # ChannelHog~$cmdline~" /jffs/scripts/init-start
 		else
 			echo "$cmdline" >> /jffs/scripts/init-start
+		fi
+		if [ -d "/opt/bin" ] && [ ! -L "/opt/bin/channelhog" ]; then
+			ln -s /jffs/scripts/channelhog.sh /opt/bin/channelhog
 		fi
 		cru a ChannelHog "45 6 * * * sh /jffs/scripts/channelhog.sh"
 		Write_Config
