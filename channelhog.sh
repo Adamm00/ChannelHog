@@ -277,6 +277,7 @@ EOF
 		else
 			echo "$cmdline" >> /jffs/scripts/init-start
 		fi
+		chmod 755 "/jffs/scripts/init-start" "/jffs/scripts/channelhog.sh"
 		if [ -d "/opt/bin" ] && [ ! -L "/opt/bin/channelhog" ]; then
 			ln -s /jffs/scripts/channelhog.sh /opt/bin/channelhog
 		fi
