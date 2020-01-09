@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           29/12/2019 - v1.0.0                                            #
+#                                           10/01/2019 - v1.0.0                                            #
 ############################################################################################################
 
 
@@ -20,7 +20,7 @@ avatar="https://i.imgur.com/jZk12SL.png"
 channelhogcfg="/jffs/scripts/channelhog.cfg"
 
 clear
-sed -n '3,16p' "$0"
+sed -n '2,16p' "$0"
 
 Kill_Lock () {
 		if [ -f "/tmp/channelhog.lock" ] && [ -d "/proc/$(sed -n '2p' /tmp/channelhog.lock)" ]; then
@@ -168,7 +168,7 @@ case "$1" in
 							},
 							{
 								"name": "Uptime",
-								"value": "$(uptime | awk -F, '{sub(".*up ",x,$1);print $1,$2}')",
+								"value": "$(uptime | awk -F'( |,|:)+' '{if ($7=="min") m=$6; else {if ($7~/^day/) {d=$6;h=$8;m=$9} else {h=$6;m=$7}}} {print d+0,"days,",h+0,"hours,",m+0,"minutes."}')",
 								"inline": false
 							}
 						],
