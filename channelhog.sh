@@ -184,6 +184,8 @@ EOF
 			logger -st ChannelHog "$currentbandwidth Channel Width Detected - Restarting Wireless Service"
 			wl -i "$port5ghz" down
 			wl -i "$port5ghz" up
+		else
+			echo "[i] $currentbandwidth Channel Width Detected - No Action Required"
 		fi
 	;;
 
