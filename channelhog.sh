@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           10/01/2019 - v1.0.0                                            #
+#                                           11/01/2019 - v1.0.0                                            #
 ############################################################################################################
 
 
