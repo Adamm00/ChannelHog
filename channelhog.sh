@@ -142,7 +142,7 @@ case "$1" in
 		. "$channelhogcfg"
 		port5ghz="$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{print $1}')"
 		currentbandwidth="$(wl -i "$port5ghz" assoc | grep -F "Chanspec" | awk '{print $5}')"
-		targetbandwidth="$(nvram get wl1_chanspec | awk -F "/" '{print $2}')MHz"
+		targetbandwidth="160MHz"
 		if [ "$currentbandwidth" != "$targetbandwidth" ]; then
 			if [ "$enablediscord" = "true" ]; then
 				curl -s -H "Content-Type: application/json" \
