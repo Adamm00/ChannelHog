@@ -151,7 +151,7 @@ case "$1" in
 				{
 					"username": "$botname",
 					"avatar_url": "$avatar",
-					"content": "Channel Width Error Detected - Restarting Wireless Service @everyone",
+					"content": "Channel Width Error Detected - Restarting 5GHz Radio @everyone",
 					"embeds": [{
 						"title": "$(nvram get model)",
 						"color": 15749200,
@@ -181,7 +181,7 @@ case "$1" in
 EOF
 							)" "$webhookurl"
 			fi
-			logger -st ChannelHog "$currentbandwidth Channel Width Detected - Restarting Wireless Service"
+			logger -st ChannelHog "$currentbandwidth Channel Width Detected - Restarting 5GHz Radio"
 			wl -i "$port5ghz" down
 			wl -i "$port5ghz" up
 		else
