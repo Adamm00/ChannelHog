@@ -2,7 +2,7 @@
 
 ## About
 
-Monitor and force maximum 5GHz bandwidth for the Asus RT-AX88U as seen on [SmallNetBuilder](https://www.snbforums.com/threads/release-channelhog-monitor-and-force-maximum-5ghz-bandwidth-for-ax88u.61131/)
+Monitor and force maximum 5GHz bandwidth for the Asus AX88U as seen on [SmallNetBuilder](https://www.snbforums.com/threads/release-channelhog-monitor-and-force-maximum-5ghz-bandwidth-for-ax88u.61131/)
 
 Tired of badly configured neighbours and DFS cutting your wireless bandwidth in half? Then this is the script for you!
 
