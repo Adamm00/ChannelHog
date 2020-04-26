@@ -340,7 +340,7 @@ EOF
 	uninstall)
 		Check_Lock "$@"
 		echo "If You Were Experiencing Issues, Try Update Or Visit SNBForums/Github For Support"
-		echo "https://github.com/Adamm00/IPSet_ASUS"
+		echo "https://github.com/Adamm00/ChannelHog"
 		echo
 		while true; do
 			echo "[!] Warning - This Will Delete All ChannelHog Related Files"
@@ -356,9 +356,10 @@ EOF
 			case "$continue" in
 				1)
 					echo "[i] Deleting ChannelHog Files"
-					echo
 					sed -i '\~# ChannelHog~d' /jffs/scripts/init-start
 					rm -rf "/jffs/addons/channelhog" "/opt/bin/channelhog"
+					echo "[i] Complete!"
+					echo
 					exit 0
 				;;
 				2|e|exit)
