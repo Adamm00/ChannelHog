@@ -170,6 +170,9 @@ case "$1" in
 		Check_Lock "$@"
 		Unload_Cron
 		Load_Cron
+		if ! grep -F "sh /jffs/addons/channelhog/channelhog.sh" /jffs/configs/profile.add; then
+			echo "alias channelhog=\"sh /jffs/addons/channelhog/channelhog.sh\" # ChannelHog" >> /jffs/configs/profile.add
+		fi
 		echo "[i] ChannelHog Started!"
 	;;
 
@@ -356,7 +359,7 @@ EOF
 			case "$continue" in
 				1)
 					echo "[i] Deleting ChannelHog Files"
-					sed -i '\~# ChannelHog~d' /jffs/scripts/init-start
+					sed -i '\~# ChannelHog~d' /jffs/scripts/init-start /jffs/configs/profile.add
 					rm -rf "/jffs/addons/channelhog" "/opt/bin/channelhog"
 					echo "[i] Complete!"
 					echo

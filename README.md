@@ -19,7 +19,7 @@ This script will always be open source and free to use, but if you want to suppo
 To open the menu its as simple as;
 
 ```Shell
-sh /jffs/addons/channelhog/channelhog.sh
+channelhog
 ```
 
 [![ChannelHog GUI](https://i.imgur.com/YfYthFy.png "ChannelHog GUI")](https://i.imgur.com/YfYthFy.png  "ChannelHog GUI")
