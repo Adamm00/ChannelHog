@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           11/01/2019 - v1.0.0                                            #
+#                                           27/04/2019 - v1.0.1                                            #
 ############################################################################################################
 
 
@@ -72,6 +72,7 @@ Filter_Version () {
 
 
 Load_Menu () {
+	reloadmenu="1"
 	while true; do
 		echo "Select Menu Option:"
 		echo "[1]  --> Start ChannelHog"
@@ -101,6 +102,39 @@ Load_Menu () {
 			;;
 			4)
 				option1="update"
+				while true; do
+					echo "Select Update Option:"
+					echo "[1]  --> Check For And Install Any New Updates"
+					echo "[2]  --> Check For Updates Only"
+					echo "[3]  --> Force Update Even If No Updates Detected"
+					echo
+					printf "[1-3]: "
+					read -r "menu2"
+					echo
+					case "$menu2" in
+						1)
+							break
+						;;
+						2)
+							option2="check"
+							break
+						;;
+						3)
+							option2="-f"
+							break
+						;;
+						e|exit|back|menu)
+							unset "option1" "option2"
+							clear
+							Load_Menu
+							break
+						;;
+						*)
+							echo "[*] $menu2 Isn't An Option!"
+							echo
+						;;
+					esac
+				done
 				break
 			;;
 			5)
@@ -128,7 +162,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ -n "$option1" ]; then
-	set "$option1"
+	set "$option1" "$option2"
 fi
 
 case "$1" in
@@ -136,6 +170,7 @@ case "$1" in
 		Check_Lock "$@"
 		Unload_Cron
 		Load_Cron
+		echo "[i] ChannelHog Started!"
 	;;
 
 	check)
@@ -181,7 +216,7 @@ case "$1" in
 EOF
 							)" "$webhookurl"
 			fi
-			logger -st ChannelHog "$currentbandwidth Channel Width Detected - Restarting 5GHz Radio"
+			logger -st ChannelHog "[*] $currentbandwidth Channel Width Detected - Restarting 5GHz Radio"
 			wl -i "$port5ghz" down
 			wl -i "$port5ghz" up
 		else
@@ -197,24 +232,26 @@ EOF
 
 	update)
 		Check_Lock "$@"
-		remoteurl="https://raw.githubusercontent.com/Adamm00/ChannelHog/master/channelhog.sh"
-		curl -fsL --retry 3 "$remoteurl" | grep -qF "Adamm" || { logger -st ChannelHog "[*] 404 Error Detected - Stopping Update"; echo; exit 1; }
+		remotedir="https://raw.githubusercontent.com/Adamm00/ChannelHog/master"
 		localver="$(Filter_Version < "$0")"
-		remotever="$(curl -fsL --retry 3 "$remoteurl" | Filter_Version)"
+		remotever="$(curl -fsL --retry 3 --connect-timeout 3 "${remotedir}/channelhog.sh" | Filter_Version)"
 		localmd5="$(md5sum "$0" | awk '{print $1}')"
-		remotemd5="$(curl -fsL --retry 3 "$remoteurl" | md5sum | awk '{print $1}')"
+		remotemd5="$(curl -fsL --retry 3 --connect-timeout 3 "${remotedir}/channelhog.sh" | md5sum | awk '{print $1}')"
 		if [ "$localmd5" = "$remotemd5" ] && [ "$2" != "-f" ]; then
-			logger -t ChannelHog "[%] ChannelHog Up To Date - $localver (${localmd5})"; echo "[%] ChannelHog Up To Date - $localver (${localmd5})"
+			echo "[i] ChannelHog Up To Date - $localver (${localmd5})"
+			noupdate="1"
 		elif [ "$localmd5" != "$remotemd5" ] && [ "$2" = "check" ]; then
-			logger -t ChannelHog "[%] ChannelHog Update Detected - $remotever (${remotemd5})"; echo "[%] ChannelHog Update Detected - $remotever (${remotemd5})"
-			nolog="2"
+			echo "[i] ChannelHog Update Detected - $remotever (${remotemd5})"
+			noupdate="1"
 		elif [ "$2" = "-f" ]; then
 			echo "[i] Forcing Update"
 		fi
-		if [ "$localmd5" != "$remotemd5" ] || [ "$2" = "-f" ] && [ "$nolog" != "2" ]; then
-			logger -t ChannelHog "[%] New Version Detected - Updating To $remotever (${remotemd5})"; echo "[%] New Version Detected - Updating To $remotever (${remotemd5})"
-			curl -fsL --retry 3 "$remoteurl" -o "$0" || { logger -st ChannelHog "[*] Update Failed - Exiting"; echo; exit 1; }
-			echo; exit 0
+		if [ "$localmd5" != "$remotemd5" ] || [ "$2" = "-f" ] && [ "$noupdate" != "1" ]; then
+			echo "[i] New Version Detected - Updating To $remotever (${remotemd5})"
+			curl -fsL --retry 3 --connect-timeout 3 "${remotedir}/channelhog.sh" -o "$0"
+			echo "[i] Update Complete!"
+			echo
+			exit 0
 		fi
 	;;
 
@@ -335,6 +372,7 @@ EOF
 			esac
 		done
 	;;
+
 	*)
 		echo "Command Not Recognized, Please Try Again"
 		echo "Accepted Commands Are; (sh $0 [start|check|disable|install|uninstall])"
@@ -343,3 +381,4 @@ EOF
 esac
 if [ "$lockchannelhog" = "true" ]; then rm -rf "/tmp/channelhog.lock"; fi
 echo
+if [ -n "$reloadmenu" ]; then echo; printf "[i] Press Enter To Continue..."; read -r "continue"; exec "$0"; fi
