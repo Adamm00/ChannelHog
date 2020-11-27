@@ -260,7 +260,7 @@ EOF
 
 	install)
 		[ -z "$(nvram get odmpid)" ] && model="$(nvram get productid)" || model="$(nvram get odmpid)"
-		if [ "$model" = "RT-AX88U" ]; then
+		if [ "$model" = "RT-AX88U" ] || [ "$model" = "RT-AX86U" ]; then
 			Check_Lock "$@"
 			while true; do
 				echo "Would You Like To Enable Discord Notifications?"
