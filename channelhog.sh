@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           09/10/2020 - v1.0.1                                            #
+#                                           18/05/2021 - v1.0.2                                            #
 ############################################################################################################
 
 
@@ -260,7 +260,7 @@ EOF
 
 	install)
 		[ -z "$(nvram get odmpid)" ] && model="$(nvram get productid)" || model="$(nvram get odmpid)"
-		if [ "$model" = "RT-AX88U" ] || [ "$model" = "RT-AX86U" ]; then
+		if [ "$model" = "RT-AX88U" ] || [ "$model" = "RT-AX86U" ] || [ "$model" = "RT-AX58U" ]; then
 			Check_Lock "$@"
 			while true; do
 				echo "Would You Like To Enable Discord Notifications?"
@@ -336,7 +336,7 @@ EOF
 				wl -i "$port5ghz" up
 			fi
 		else
-			echo "[*] ChannelHog currently only supports the RT-AX88U"
+			echo "[*] ChannelHog currently only supports the RT-AX88U / RT-AX86U / RT-AX58U"
 		fi
 	;;
 
