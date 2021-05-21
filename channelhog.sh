@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           18/05/2021 - v1.0.2                                            #
+#                                           21/05/2021 - v1.0.3                                            #
 ############################################################################################################
 
 
@@ -21,7 +21,7 @@ channelhogcfg="/jffs/addons/channelhog/channelhog.cfg"
 
 clear
 sed -n '2,16p' "$0"
-port5ghz="$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{print $1}')"
+port5ghz="$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{if (NR==1) {print $1}}')"
 
 Kill_Lock () {
 		if [ -f "/tmp/channelhog.lock" ] && [ -d "/proc/$(sed -n '2p' /tmp/channelhog.lock)" ]; then
