@@ -188,7 +188,7 @@ case "$1" in
 			restart5ghz1="true"
 			restartradio="5GHz-1 "
 		fi
-		if [ "$currentbandwidth2" != "$targetbandwidth" ]; then
+		if [ -n "$currentbandwidth2" ] && [ "$currentbandwidth2" != "$targetbandwidth" ]; then
 			restart5ghz2="true"
 			restartradio="${restartradio}5GHz-2"
 		fi
