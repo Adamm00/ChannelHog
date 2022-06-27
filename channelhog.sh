@@ -182,7 +182,9 @@ case "$1" in
 		Check_Lock "$@"
 		. "$channelhogcfg"
 		currentbandwidth1="$(wl -i "$port5ghz1" assoc | grep -F "Chanspec" | awk '{print $5}')"
-		currentbandwidth2="$(wl -i "$port5ghz2" assoc | grep -F "Chanspec" | awk '{print $5}')"
+		if [ -n "$port5ghz2" ]; then
+			currentbandwidth2="$(wl -i "$port5ghz2" assoc | grep -F "Chanspec" | awk '{print $5}')"
+		fi
 		targetbandwidth="160MHz"
 		if [ "$currentbandwidth1" != "$targetbandwidth" ]; then
 			restart5ghz1="true"
