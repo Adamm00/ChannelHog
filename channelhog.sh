@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           21/05/2021 - v1.0.3                                            #
+#                                           27/06/2022 - v1.1.0                                            #
 ############################################################################################################
 
 
@@ -21,7 +21,9 @@ channelhogcfg="/jffs/addons/channelhog/channelhog.cfg"
 
 clear
 sed -n '2,16p' "$0"
-port5ghz="$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{if (NR==1) {print $1}}')"
+
+port5ghz1="$(nvram get wl_ifnames | grep -oF "$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{if (NR==1) {print $1}}')")"
+port5ghz2="$(nvram get wl_ifnames | grep -oF "$(ifconfig | grep -F "$(nvram get wl2_hwaddr)" | awk '{if (NR==1) {print $1}}')")"
 
 Kill_Lock () {
 		if [ -f "/tmp/channelhog.lock" ] && [ -d "/proc/$(sed -n '2p' /tmp/channelhog.lock)" ]; then
@@ -179,9 +181,24 @@ case "$1" in
 	check)
 		Check_Lock "$@"
 		. "$channelhogcfg"
-		currentbandwidth="$(wl -i "$port5ghz" assoc | grep -F "Chanspec" | awk '{print $5}')"
+		currentbandwidth1="$(wl -i "$port5ghz1" assoc | grep -F "Chanspec" | awk '{print $5}')"
+		currentbandwidth2="$(wl -i "$port5ghz2" assoc | grep -F "Chanspec" | awk '{print $5}')"
 		targetbandwidth="160MHz"
-		if [ "$currentbandwidth" != "$targetbandwidth" ]; then
+		if [ "$currentbandwidth1" != "$targetbandwidth" ]; then
+			restart5ghz1="true"
+			restartradio="5GHz-1 "
+		fi
+		if [ "$currentbandwidth2" != "$targetbandwidth" ]; then
+			restart5ghz2="true"
+			restartradio="${restartradio}5GHz-2"
+		fi
+		if [ "$currentbandwidth1" = "$currentbandwidth2" ]; then
+			currentbandwidth="$currentbandwidth1"
+		else
+			currentbandwidth="${currentbandwidth1} ${currentbandwidth2}"
+		fi
+
+		if [ "$restart5ghz1" = "true" ] || [ "$restart5ghz2" = "true" ]; then
 			if [ "$enablediscord" = "true" ]; then
 				curl -s -H "Content-Type: application/json" \
 				-X POST \
@@ -195,12 +212,12 @@ case "$1" in
 						"color": 15749200,
 						"url": "https://$(nvram get lan_ipaddr):$(nvram get https_lanport)",
 						"fields": [{
-								"name": "Current Channel Width",
+								"name": "Current ${restartradio} Channel Width",
 								"value": "$currentbandwidth",
 								"inline": true
 							},
 							{
-								"name": "Target Channel Width",
+								"name": "Target ${restartradio} Channel Width",
 								"value": "$targetbandwidth",
 								"inline": true
 							},
@@ -219,9 +236,16 @@ case "$1" in
 EOF
 							)" "$webhookurl"
 			fi
-			logger -st ChannelHog "[*] $currentbandwidth Channel Width Detected - Restarting 5GHz Radio"
-			wl -i "$port5ghz" down
-			wl -i "$port5ghz" up
+			logger -st ChannelHog "[*] $currentbandwidth Channel Width Detected - Restarting ${restartradio} Radio"
+			if [ -z "$restart5ghz1" ]; then
+				wl -i "$port5ghz1" down
+				wl -i "$port5ghz1" up
+			fi
+			if [ -z "$restart5ghz2" ]; then
+				wl -i "$port5ghz2" down
+				wl -i "$port5ghz2" up
+			fi
+
 		else
 			echo "[i] $currentbandwidth Channel Width Detected - No Action Required"
 		fi
@@ -332,8 +356,12 @@ EOF
 				nvram set wl1_bw=5
 				echo "[i] Restarting 5GHz Radio To Complete Installation"
 				printf "[i] Press Enter To Continue..."; read -r "continue"
-				wl -i "$port5ghz" down
-				wl -i "$port5ghz" up
+				wl -i "$port5ghz1" down
+				wl -i "$port5ghz1" up
+				if [ -n "$port5ghz2" ]; then
+					wl -i "$port5ghz2" down
+					wl -i "$port5ghz2" up
+				fi
 			fi
 		else
 			echo "[*] ChannelHog currently only supports the RT-AX88U / RT-AX86U / RT-AX58U"
