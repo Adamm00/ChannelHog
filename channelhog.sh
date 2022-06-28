@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           27/06/2022 - v1.1.0                                            #
+#                                           28/06/2022 - v1.1.1                                            #
 ############################################################################################################
 
 
@@ -239,11 +239,11 @@ EOF
 							)" "$webhookurl"
 			fi
 			logger -st ChannelHog "[*] $currentbandwidth Channel Width Detected - Restarting ${restartradio} Radio"
-			if [ -z "$restart5ghz1" ]; then
+			if [ "$restart5ghz1" = "true" ]; then
 				wl -i "$port5ghz1" down
 				wl -i "$port5ghz1" up
 			fi
-			if [ -z "$restart5ghz2" ]; then
+			if [ "$restart5ghz2" = "true" ]; then
 				wl -i "$port5ghz2" down
 				wl -i "$port5ghz2" up
 			fi
