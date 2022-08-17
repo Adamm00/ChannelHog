@@ -10,7 +10,7 @@
 #                                                                                                          #
 #                          Monitor And Force Maximum 5GHz Bandwidth For Asus Routers                       #
 #                                  By Adamm - https://github.com/Adamm00                                   #
-#                                           28/06/2022 - v1.1.1                                            #
+#                                           17/08/2022 - v1.1.2                                            #
 ############################################################################################################
 
 
@@ -24,6 +24,8 @@ sed -n '2,16p' "$0"
 
 port5ghz1="$(nvram get wl_ifnames | grep -oF "$(ifconfig | grep -F "$(nvram get wl1_hwaddr)" | awk '{if (NR==1) {print $1}}')")"
 port5ghz2="$(nvram get wl_ifnames | grep -oF "$(ifconfig | grep -F "$(nvram get wl2_hwaddr)" | awk '{if (NR==1) {print $1}}')")"
+
+[ -z "$(nvram get odmpid)" ] && model="$(nvram get productid)" || model="$(nvram get odmpid)"
 
 Kill_Lock () {
 		if [ -f "/tmp/channelhog.lock" ] && [ -d "/proc/$(sed -n '2p' /tmp/channelhog.lock)" ]; then
@@ -187,8 +189,10 @@ case "$1" in
 		fi
 		targetbandwidth="160MHz"
 		if [ "$currentbandwidth1" != "$targetbandwidth" ]; then
-			restart5ghz1="true"
-			restartradio="5GHz-1 "
+			if [ "$model" != "XT8" ]; then
+				restart5ghz1="true"
+				restartradio="5GHz-1 "
+			fi
 		fi
 		if [ -n "$currentbandwidth2" ] && [ "$currentbandwidth2" != "$targetbandwidth" ]; then
 			restart5ghz2="true"
